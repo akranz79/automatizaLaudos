@@ -7,6 +7,8 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from datetime import datetime
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+import logging
+from log_config import setup_logging
 
 # Defina a variável gc globalmente
 gc = gspread.service_account(filename='clean-beaker-414415-8887a7f9338c.json')

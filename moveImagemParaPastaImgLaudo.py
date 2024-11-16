@@ -1,16 +1,12 @@
+import logging
 import os
 import shutil
-import json
-
-# Carregar configurações do arquivo JSON
-with open('config.json', 'r') as config_file:
-    config = json.load(config_file)
-
-# Definir diretórios de origem e destino
-diretorio_origem = config["diretorio_laudos"]
-diretorio_destino = os.path.join(diretorio_origem, 'imgLaudos')
 
 def mover_arquivos_png():
+    logging.info("Esteira de processo[5.1]: chamando mover_arquivos_png : moveImagemParaPastaImgLaudo.py")
+    diretorio_origem = 'D:/Laudos'
+    diretorio_destino = 'D:/Laudos/imgLaudos'
+
     # Criar o diretório de destino se não existir
     if not os.path.exists(diretorio_destino):
         os.makedirs(diretorio_destino)
@@ -23,7 +19,7 @@ def mover_arquivos_png():
 
             # Mover o arquivo para o diretório de destino
             shutil.move(caminho_arquivo_origem, caminho_arquivo_destino)
-            print(f"Arquivo {arquivo} movido para {diretorio_destino}.[4]")
+            logging.info(f"Arquivo {arquivo} movido para {diretorio_destino}.")
 
 if __name__ == "__main__":
     mover_arquivos_png()

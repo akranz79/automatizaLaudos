@@ -3,6 +3,8 @@ import win32com.client as win32
 from shutil import move
 import json
 import time
+import logging
+from log_config import setup_logging
 
 def obter_numero_laudo():
     try:
@@ -37,6 +39,7 @@ def enviar_email(destinatario, copia_destinatario, assunto, corpo, anexo):
         # Enviar email
         email.Send()
         print(f"Email enviado para {destinatario} , {copia_destinatario} com assunto: {assunto}.")
+        logging.info(f"Email enviado para {destinatario} , {copia_destinatario} com assunto: {assunto}.")
 
         return True
     except Exception as e:
@@ -56,7 +59,8 @@ def enviar_email_candidato():
             info_candidato = json.load(f)
 
         # Extrair informações do candidato
-        destinatario = 'ahkranz79@gmail.com'
+        destinatario = info_candidato.get("email")
+        #destinatario = 'ahkranz79@gmail.com'
         nome = info_candidato.get("nome")
         caminho_imagem = info_candidato.get("caminho_imagem")
         candidato_vaga = info_candidato.get("candidato_vaga")
@@ -91,6 +95,7 @@ def enviar_email_candidato():
 
 # Chamada para enviar email para o candidato
 enviar_email_candidato()
+logging.info("Esteira de processo[7.1]: chamando enviar_email_candidato : enviaEmail.py")
 
 
 def enviar_emails_laudos(diretorio, destinatario, copia_destinatario):
@@ -102,7 +107,6 @@ def enviar_emails_laudos(diretorio, destinatario, copia_destinatario):
 
         # Verificar se há arquivos para enviar
         if not arquivos:
-            print("Verificar se há arquivos para enviar...")
             return
 
         for arquivo in arquivos:
@@ -127,6 +131,7 @@ def enviar_emails_laudos(diretorio, destinatario, copia_destinatario):
 
                 # Mover o arquivo enviado para a pasta 'Enviados'
                 move(anexo, os.path.join(diretorio, "Enviados", arquivo))
+                logging.info("Esteira de processo[7.2]: chamando enviar_emails_laudos : enviaEmail.py")
 
     except FileNotFoundError:
         print(f"O diretório {diretorio} não foi encontrado.")
@@ -137,8 +142,8 @@ def enviar_emails_laudos(diretorio, destinatario, copia_destinatario):
 
 
 # Diretório a ser verificado
-diretorio = r"D:\LaudosTeste"
-imagem = r"D:\LaudosTeste\imgLaudos"
+diretorio = r"D:\Laudos"
+imagem = r"D:\Laudos\imgLaudos"
 
 # Ler o destinatário e o e-mail em cópia do arquivo config.json
 with open('config.json') as f:

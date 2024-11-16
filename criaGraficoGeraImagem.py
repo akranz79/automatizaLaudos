@@ -1,16 +1,11 @@
 import os
-import json
 from docx import Document
 import matplotlib.pyplot as plt
-
-# Carregar configurações do arquivo JSON
-with open('config.json', 'r') as config_file:
-    config = json.load(config_file)
-
-# Acessar o diretório dos laudos
-diretorio_laudos = config["diretorio_laudos"]
+import logging
+from log_config import setup_logging
 
 def gerar_grafico_e_salvar_imagem(aguia, gato, tubarao, lobo, nome_laudo):
+    logging.info("Esteira de processo[3.1]: chamando gerar_grafico_e_salvar_imagem : criaGraficoGeraImagem.py")
     # Convertendo os valores para números
     aguia = float(aguia.strip('%'))
     gato = float(gato.strip('%'))
@@ -40,7 +35,7 @@ def gerar_grafico_e_salvar_imagem(aguia, gato, tubarao, lobo, nome_laudo):
 
     # Salvar o gráfico como uma imagem com o mesmo nome do laudo
     nome_arquivo_imagem = f"{nome_laudo.replace('.docx', '.png')}"
-    caminho_imagem = os.path.join(diretorio_laudos, nome_arquivo_imagem)
+    caminho_imagem = os.path.join('D:', 'Laudos', nome_arquivo_imagem)
     plt.savefig(caminho_imagem)
 
     # Fechar a figura para liberar recursos
@@ -49,6 +44,11 @@ def gerar_grafico_e_salvar_imagem(aguia, gato, tubarao, lobo, nome_laudo):
     return caminho_imagem
 
 def inserir_imagem_laudo():
+    logging.info("Esteira de processo[3.2]: chamando inserir_imagem_laudo : criaGraficoGeraImagem.py")
+    # Diretório dos laudos
+
+    diretorio_laudos = 'D:/Laudos'
+
     # Listar todos os arquivos na pasta de laudos
     for arquivo in os.listdir(diretorio_laudos):
         if arquivo.endswith('.docx') and arquivo != 'modelo.docx':
@@ -64,8 +64,6 @@ def inserir_imagem_laudo():
             tubarao = table.cell(2, 1).text
             lobo = table.cell(3, 1).text
             caminho_imagem = gerar_grafico_e_salvar_imagem(aguia, gato, tubarao, lobo, arquivo)
-
-            print(f"Imagem do gráfico salva em: {caminho_imagem}.[2]")
 
 if __name__ == "__main__":
     inserir_imagem_laudo()

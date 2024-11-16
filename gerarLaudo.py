@@ -12,15 +12,9 @@ from pydrive.drive import GoogleDrive
 import unicodedata
 from unidecode import unidecode
 from descriptions import describe_aguia, describe_gato, describe_tubarao, describe_lobo
-from logger import gerar_log
+import logging
+from log_config import setup_logging
 import json
-
-# Carregar configurações do arquivo JSON
-with open('config.json', 'r') as config_file:
-    config = json.load(config_file)
-
-# Acessar o diretório dos laudos e outros valores
-diretorio_laudos = config["diretorio_laudos"]
 
 
 # Defina a variável gc globalmente
@@ -67,7 +61,7 @@ descricao, tempo_experiencia, porte, nivel, area_atuacao, estudando_atualmente, 
 dist_empr_temp, filhos_idade, filhos_qtde, seg_ult_empr, temp_ult_empr, mot_saida_ult_empr, seg_penult_empr, temp_penult_empr, mot_saida_penult_empr, telefone, uf_estado, cod_cidade,
 aguia, gato, tubarao, lobo, resultado_teste):
 
-    modelo = Document("D:/LaudosTeste/modelo.docx")
+    modelo = Document("D:/Laudos/modelo.docx")
     # Obtém a data e hora atual
     now = datetime.now()
     current_time = now.strftime("%d/%m/%Y %H:%M:%S")
@@ -198,14 +192,14 @@ aguia, gato, tubarao, lobo, resultado_teste):
     table.cell(3, 1).text = f"{lobo}%"
 
     nome_arquivo_sem_acentuacao = unidecode(f'{usuario}_{candidato_vaga}')
-#   caminho_arquivo = os.path.join('D:', 'LaudosTeste', f'{nome_arquivo_sem_acentuacao}.docx')
 
-    caminho_arquivo = os.path.join(diretorio_laudos, f'{nome_arquivo_sem_acentuacao}.docx')
+    caminho_arquivo = os.path.join('D:', 'Laudos', f'{nome_arquivo_sem_acentuacao}.docx')
+    # Caminho da imagem que será anexada ao email
+    #caminho_imagem = os.path.join('D:', 'Laudos', 'imgLaudos', f'{nome_arquivo_sem_acentuacao}.png')
     modelo.save(caminho_arquivo)
 
-#    modelo.save(caminho_arquivo)
-
-    print(f'[data: {current_time}].[registro: {carimbo}].[email: {email}].[cod.: ({aguia},{gato},{tubarao},{lobo})].[Laudo {nome_arquivo_sem_acentuacao} criado com sucesso.].[1]')
+    # print(f'[data: {current_time}].[registro: {carimbo}].[email: {email}].[cod.: ({aguia},{gato},{tubarao},{lobo})].[Laudo {nome_arquivo_sem_acentuacao} criado com sucesso.].[1]')
+    logging.info(f"[ {current_time} | {carimbo} ] - Laudo {nome_arquivo_sem_acentuacao} em processo de criação.. aguarde]")
 
 def calcular_idade(data_nascimento):
     data_nascimento = datetime.strptime(data_nascimento, "%d/%m/%Y")
@@ -243,7 +237,6 @@ def gerar_laudos_pendentes():
         # Obtém a data e hora atual
         now = datetime.now()
         current_time = now.strftime("%d/%m/%Y %H:%M:%S")
-        print(f"[{current_time}] Não há laudos pendentes para gerar.")
     else:
         for linha in laudos_pendentes:
             # Extrair os dados da planilha
@@ -277,8 +270,7 @@ def gerar_laudos_pendentes():
             #resultado_teste = unidecode(f'{resultado_teste}')
 
             # Caminho da imagem que será anexada ao email
-            #caminho_imagem = os.path.join('D:', 'LaudosTeste', 'imgLaudos', f'{nome_arquivo_sem_acentuacao}.png')
-            caminho_imagem = os.path.join(diretorio_laudos, 'imgLaudos', f'{nome_arquivo_sem_acentuacao}.png')
+            caminho_imagem = os.path.join('D:', 'Laudos', 'imgLaudos', f'{nome_arquivo_sem_acentuacao}.png')
 
             # Salvar as informações do candidato para enviar o email posteriormente
             info_candidato = {
@@ -292,8 +284,6 @@ def gerar_laudos_pendentes():
             # Salvar essas informações em um arquivo JSON
             with open("candidato_info.json", "w") as file:
                 json.dump(info_candidato, file)
-
-            print(f"Informações do candidato {usuario} salvas para envio de email.")
 
             # Marcar o laudo como gerado
             laudo_gerado.append(str(linha))

@@ -1,6 +1,7 @@
 {
-  "diretorio_laudos": "D:\\LaudoSalvo",
-  "tempo_loop": 120,
-  "destinatario": "gs.223.talent@gmail.com",
-  "LOG_DIRECTORY" : "D:\\LaudosTeste\\Logs"
+  "diretorio_laudos": "D:\\Laudos",
+  "tempo_loop": 60,
+  "destinatario": "1gs.gestaodetalentos@gmail.com",
+  "copia_destinatario": "1glassescoaching@gmail.com",
+  "LOG_DIRECTORY" : "D:\\Laudos\\Logs"
 }
